@@ -8,8 +8,10 @@ RUN  DEBIAN_FRONTEND=noninteractive apt-get install -y \
     luajit \
     cmake \
     luajit-5.1-dev \
-    wget build-essential
+    wget build-essential \
+    ghostscript
 
+RUN apt-get install -y libmagickwand-dev
 # build imagemagick
 RUN wget http://www.imagemagick.org/download/ImageMagick.tar.gz && \
   tar xvzf ImageMagick.tar.gz && \
@@ -19,6 +21,11 @@ RUN wget http://www.imagemagick.org/download/ImageMagick.tar.gz && \
   make install && \
   cd ..
 
+RUN ldconfig /usr/local/lib
+
+RUN mv /usr/lib/x86_64-linux-gnu/libMagickWand.a /usr/lib/x86_64-linux-gnu/libMagickWand_old.a && \
+    mv /usr/lib/x86_64-linux-gnu/libMagickWand.so /usr/lib/x86_64-linux-gnu/libMagickWand_old.so
+
 # build lua-imagick
 RUN git clone https://github.com/isage/lua-imagick.git && \
   cd lua-imagick && \
@@ -26,4 +33,4 @@ RUN git clone https://github.com/isage/lua-imagick.git && \
   cd build && \
   cmake .. && \
   make && \
-  make install
+  sudo make install
